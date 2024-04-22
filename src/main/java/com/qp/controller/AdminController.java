@@ -67,7 +67,7 @@ public class AdminController {
 		}
 	}
 
-	@PatchMapping("/items/{itemId}")
+	@PatchMapping("/manage/items/{itemId}")
 	public ResponseEntity<?> manageInventory(@PathVariable(name="itemId") Long itemId,@RequestParam(name="quantity") int quantity) {
 		Optional<GroceryItem> itemOptional = groceryItemRepository.findById(itemId);
 		if (itemOptional.isPresent()) {
