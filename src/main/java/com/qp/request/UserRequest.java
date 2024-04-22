@@ -1,15 +1,16 @@
 package com.qp.request;
 
+import java.util.List;
 import java.util.Set;
 
 import com.qp.entity.UserRole;
 
 public class UserRequest {
 
-    private Long id;
+	private Long id;
     private String username;
     private String password;
-    private Set<UserRole> roles;
+    private List<UserRole> roles;
     
     
 	public UserRequest() {
@@ -26,6 +27,9 @@ public class UserRequest {
 	public void setId(Long id) {
 		this.id = id;
 	}
+
+
+
 
 
 	public String getUsername() {
@@ -48,12 +52,12 @@ public class UserRequest {
 	}
 
 
-	public Set<UserRole> getRoles() {
+	public List<UserRole> getRoles() {
 		return roles;
 	}
 
 
-	public void setRoles(Set<UserRole> roles) {
+	public void setRoles(List<UserRole> roles) {
 		this.roles = roles;
 	}
 

@@ -31,3 +31,32 @@ Admin Endpoints:
 User Endpoints:
 	GET /api/user/items - View available grocery items
 	POST /api/user/book/orders - Book multiple grocery items in a single order
+	
+#Database & Table
+
+1. users
+
+	CREATE TABLE IF NOT EXISTS public.users
+	(
+	    id bigint NOT NULL,
+	    password character varying(255) COLLATE pg_catalog."default",
+	    username character varying(255) COLLATE pg_catalog."default",
+	    CONSTRAINT users_pkey PRIMARY KEY (id));
+
+	INSERT INTO public.users(id, password, username) VALUES (1, 'Admin123', 'Admin');
+	
+	INSERT INTO public.users(id, password, username) VALUES (2, 'User123', 'User');
+	
+2. roles
+
+		CREATE TABLE IF NOT EXISTS public.roles
+		(
+	    id bigint NOT NULL,
+	    name character varying(255) COLLATE pg_catalog."default",
+	    CONSTRAINT roles_pkey PRIMARY KEY (id)
+		);
+		
+		
+		INSERT INTO public.roles(id, name) VALUES (1, ADMIN);
+		INSERT INTO public.roles(id, name) VALUES (2, USER);
+	

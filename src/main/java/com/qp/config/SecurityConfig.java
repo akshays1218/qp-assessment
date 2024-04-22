@@ -24,51 +24,48 @@ import com.qp.service.UserDetailsServiceImpl;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-	@Autowired
-	AuthTokenFilter authTokenFilter;
+    @Autowired
+    JwtAuthFilter jwtAuthFilter;
 
-	@Bean
-	public UserDetailsService userDetailsService() {
-		return new UserDetailsServiceImpl();
-	}
+    @Bean
+    public UserDetailsService userDetailsService(){
+        return new UserDetailsServiceImpl();
+    }
 
-	@SuppressWarnings("deprecation")
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-	    http.csrf().disable()
-	        .authorizeRequests()
-	            .requestMatchers("/api/auth/**").permitAll()
-	            .requestMatchers("/api/user/save").permitAll()
-	            .requestMatchers("/api/user/**").hasRole("USER")
-	            .requestMatchers("/api/admin/**").hasRole("ADMIN")
-	            .anyRequest().authenticated()
-	        .and()
-	        .sessionManagement()
-	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-	        .and()
-	        .authenticationProvider(authenticationProvider())
-	        .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
-	    
-	    return http.build();
-	}
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http.csrf().disable()
+                .authorizeRequests()
+                    .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/api/user/**").hasRole("USER")
+                    .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                    .anyRequest().authenticated()
+                .and()
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
 
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public AuthenticationProvider authenticationProvider(){
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService());
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
 
-	@Bean
-	public AuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-		authenticationProvider.setUserDetailsService(userDetailsService());
-		authenticationProvider.setPasswordEncoder(passwordEncoder());
-		return authenticationProvider;
+    }
 
-	}
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-		return config.getAuthenticationManager();
-	}
 }

@@ -29,7 +29,7 @@ public class AdminController {
 	@Autowired
 	GroceryItemRepository groceryItemRepository;
 	
-	@PostMapping("/items/save")
+	@PostMapping("/save/items")
     public ResponseEntity<?> addItem(@RequestBody GroceryItem newItem) {
         GroceryItem savedItem = groceryItemRepository.save(newItem);
         return ResponseEntity.ok().body(savedItem);

@@ -2,6 +2,7 @@ package com.qp.service;
 
 import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,48 +18,41 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	UserRepository userRepository;
 
+	ModelMapper modelMapper = new ModelMapper();
 
 	@Override
 	public UserResponse saveUser(UserRequest userRequest) {
-	    // Check if username and password are provided
-	    if (userRequest.getUsername() == null) {
-	        throw new RuntimeException("Parameter username is not found in request..!!");
-	    } else if (userRequest.getPassword() == null) {
-	        throw new RuntimeException("Parameter password is not found in request..!!");
-	    }
+		if (userRequest.getUsername() == null) {
+			throw new RuntimeException("Username not found in request..!!");
+		} else if (userRequest.getPassword() == null) {
+			throw new RuntimeException("Password not found in request..!!");
+		}
 
-	    // Encode the password
-	    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-	    String encodedPassword = encoder.encode(userRequest.getPassword());
+		User savedUser = null;
 
-	    // Create or update user
-	    User savedUser;
-	    if (userRequest.getId() != null) {
-	        // Update existing user
-	        Optional<User> optionalUser = userRepository.findById(userRequest.getId());
-	        if (optionalUser.isPresent()) {
-	            User oldUser = optionalUser.get();
-	            oldUser.setPassword(encodedPassword);
-	            oldUser.setUsername(userRequest.getUsername());
-	            oldUser.setRoles(userRequest.getRoles()); // Assuming this updates user roles
-	            savedUser = userRepository.save(oldUser);
-	        } else {
-	            throw new RuntimeException("Can't find record with identifier: " + userRequest.getId());
-	        }
-	    } else {
-	        // Create new user
-	        User newUser = new User();
-	        newUser.setUsername(userRequest.getUsername());
-	        newUser.setPassword(encodedPassword);
-	        newUser.setRoles(userRequest.getRoles());
-	        savedUser = userRepository.save(newUser);
-	    }
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		String rawPassword = userRequest.getPassword();
+		String encodedPassword = encoder.encode(rawPassword);
 
-	    
-	    UserResponse userResponse = new UserResponse(); // You need to implement this part
-	   
+		User user = modelMapper.map(userRequest, User.class);
+		user.setPassword(encodedPassword);
+		if (userRequest.getId() != null) {
+		    Optional<User> optionalUser = userRepository.findById(userRequest.getId());
+		    if (optionalUser.isPresent()) {
+		        User oldUser = optionalUser.get();
+		        oldUser.setPassword(user.getPassword());
+		        oldUser.setUsername(user.getUsername());
+		        oldUser.setRoles(user.getRoles());
 
-	    return userResponse;
+		        savedUser = userRepository.save(oldUser);
+		    } else {
+				throw new RuntimeException("Can't find record: " + userRequest.getId());
+			}
+		} else {           
+			savedUser = userRepository.save(user);
+		}
+		UserResponse userResponse = modelMapper.map(savedUser, UserResponse.class);
+		return userResponse;
 	}
 
 }

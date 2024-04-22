@@ -25,6 +25,7 @@ import com.qp.service.UserService;
 
 @RestController
 @RequestMapping("/api/user")
+@PreAuthorize("hasRole('USER')")
 public class UserController {
 
 	@Autowired
@@ -39,25 +40,14 @@ public class UserController {
 	@Autowired
 	private OrderItemRepository orderItemRepository;
 
-	@PostMapping("/save")
-	public ResponseEntity<UserResponse> saveUser(@RequestBody UserRequest userRequest) {
-		try {
-			UserResponse userResponse = userService.saveUser(userRequest);
-			return ResponseEntity.ok(userResponse);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
 
 	@GetMapping("/items")
-	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> getAvailableItems() {
 		List<GroceryItem> items = groceryItemRepository.findAll();
 		return ResponseEntity.ok().body(items);
 	}
 
 	@PostMapping("/book/orders")
-	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity<?> bookItems(@RequestBody List<OrderItemRequest> orderItems) {
 		Order order = new Order();
 		orderRepository.save(order);

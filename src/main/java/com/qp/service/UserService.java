@@ -2,6 +2,7 @@ package com.qp.service;
 
 import org.springframework.stereotype.Service;
 
+import com.qp.entity.User;
 import com.qp.request.UserRequest;
 import com.qp.response.UserResponse;
 
