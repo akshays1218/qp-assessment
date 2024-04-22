@@ -20,44 +20,35 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserResponse saveUser(UserRequest userRequest) {
-	    // Check if username and password are provided
 	    if (userRequest.getUsername() == null) {
-	        throw new RuntimeException("Parameter username is not found in request..!!");
+	        throw new RuntimeException("username is not found in request..!!");
 	    } else if (userRequest.getPassword() == null) {
-	        throw new RuntimeException("Parameter password is not found in request..!!");
+	        throw new RuntimeException("password is not found in request..!!");
 	    }
-
-	    // Encode the password
 	    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 	    String encodedPassword = encoder.encode(userRequest.getPassword());
 
-	    // Create or update user
 	    User savedUser;
 	    if (userRequest.getId() != null) {
-	        // Update existing user
 	        Optional<User> optionalUser = userRepository.findById(userRequest.getId());
 	        if (optionalUser.isPresent()) {
 	            User oldUser = optionalUser.get();
 	            oldUser.setPassword(encodedPassword);
 	            oldUser.setUsername(userRequest.getUsername());
-	            oldUser.setRoles(userRequest.getRoles()); // Assuming this updates user roles
+	            oldUser.setRoles(userRequest.getRoles()); 
 	            savedUser = userRepository.save(oldUser);
 	        } else {
-	            throw new RuntimeException("Can't find record with identifier: " + userRequest.getId());
+	            throw new RuntimeException("Can't find record: " + userRequest.getId());
 	        }
 	    } else {
-	        // Create new user
+	       
 	        User newUser = new User();
 	        newUser.setUsername(userRequest.getUsername());
 	        newUser.setPassword(encodedPassword);
 	        newUser.setRoles(userRequest.getRoles());
 	        savedUser = userRepository.save(newUser);
-	    }
-
-	    
-	    UserResponse userResponse = new UserResponse(); // You need to implement this part
-	   
-
+	    }	    
+	    UserResponse userResponse = new UserResponse(); 
 	    return userResponse;
 	}
 
