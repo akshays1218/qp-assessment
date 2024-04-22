@@ -34,7 +34,11 @@ User Endpoints:
 	
 #Database & Table
 
+<<<<<<< HEAD
 1. users
+=======
+1.Table- users
+>>>>>>> 082be109d52f978f7a71a4a0d620d882677cd522
 
 	CREATE TABLE IF NOT EXISTS public.users
 	(
@@ -47,6 +51,7 @@ User Endpoints:
 	
 	INSERT INTO public.users(id, password, username) VALUES (2, 'User123', 'User');
 	
+<<<<<<< HEAD
 2. roles
 
 		CREATE TABLE IF NOT EXISTS public.roles
@@ -60,3 +65,16 @@ User Endpoints:
 		INSERT INTO public.roles(id, name) VALUES (1, ADMIN);
 		INSERT INTO public.roles(id, name) VALUES (2, USER);
 	
+=======
+2.Table- roles
+
+	CREATE TABLE IF NOT EXISTS public.roles
+	(
+	    id bigint NOT NULL,
+	    name character varying(255) COLLATE pg_catalog."default",
+	    CONSTRAINT roles_pkey PRIMARY KEY (id));
+				
+	INSERT INTO public.roles(id, name) VALUES (1, ADMIN);
+	INSERT INTO public.roles(id, name) VALUES (2, USER);
+	
+>>>>>>> 082be109d52f978f7a71a4a0d620d882677cd522

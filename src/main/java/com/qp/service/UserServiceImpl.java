@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
 		}
 		UserResponse userResponse = modelMapper.map(savedUser, UserResponse.class);
 		return userResponse;
+	    
 	}
 
 }
